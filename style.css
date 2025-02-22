@@ -24,17 +24,6 @@ body {
     padding: 20px;
 }
 
-.search-bar {
-    margin: 20px 0;
-}
-
-.search-bar input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-}
-
 .homepage {
     text-align: center;
     padding: 50px 0;
