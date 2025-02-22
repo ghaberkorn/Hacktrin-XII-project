@@ -3,6 +3,7 @@ from werkzeug.utils import secure_filename
 import os, sqlite3
 
 UPLOAD_FOLDER = 'uploadedfiles/'
+ALLOWED_EXTENSIONS = {'html', 'css', 'py', 'java'}
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -28,6 +29,28 @@ def init_db():
 
 init_db()
 
+# Function to check allowed file extensions
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# Function to search through uploaded files
+def search_in_uploaded_files(query):
+    result_files = []
+    
+    # Loop through all files in the uploaded_files directory
+    for filename in os.listdir(UPLOAD_FOLDER):
+        file_path = os.path.join(UPLOAD_FOLDER, filename)
+        
+        if os.path.isfile(file_path) and allowed_file(filename):
+            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read()
+                
+                # Check if the query is in the file content
+                if query.lower() in content.lower():
+                    result_files.append(filename)
+    
+    return result_files
+
 @app.route("/", methods=['GET', 'POST'])
 def index():
     if 'logged_in' not in session or not session['logged_in']:
@@ -44,7 +67,7 @@ def index():
             flash('No selected file')
             return redirect(request.url)
 
-        if file:
+        if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             flash('File successfully uploaded')
@@ -107,39 +130,6 @@ def register():
 def mission():
     return render_template('mission.html')
 
-def search_in_uploaded_files(query):
-    result_files = []
-    
-    # Loop through all files in the uploaded_files directory
-    for filename in os.listdir(UPLOAD_FOLDER):
-        file_path = os.path.join(UPLOAD_FOLDER, filename)
-        
-        if os.path.isfile(file_path) and allowed_file(filename):
-            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
-                content = f.read()
-                
-                # Check if the query is in the file content
-                if query.lower() in content.lower():
-                    result_files.append(filename)
-    
-    return result_files
-
-@app.route("/", methods=["GET", "POST"])
-def index():
-    if request.method == 'POST':
-        # Handle file upload
-        if 'file' not in request.files:
-            return redirect(request.url)
-        
-        file = request.files['file']
-        
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('search', query=""))
-    
-    return render_template("index.html")
-
 @app.route("/search", methods=["GET", "POST"])
 def search():
     query = request.args.get('query', '')
@@ -148,7 +138,7 @@ def search():
     if query:
         results = search_in_uploaded_files(query)
     
-    return render_template("search.html", results=results, query = query)
+    return render_template("search.html", results=results, query=query)
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(24)

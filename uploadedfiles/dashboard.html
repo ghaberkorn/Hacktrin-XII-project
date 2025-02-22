@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Dashboard</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div class = "navbar">
+            <a href = "homepage.html">
+                <button>
+                    Homepage
+                </button>
+            </a>
+            <a href = "dashboard.html">
+                <button>
+                    Dashboard
+                </button>
+            </a>
+            <a href = "compete.html">
+                <button>
+                    Compete
+                </button>
+            </a>
+            <a href = "login.html">
+                <button>
+                    Login
+                </button>
+            </a>
+            <a href = "signup.html">
+                <button>
+                    Sign up
+                </button>
+            </a>
+        </div>
+        <div class = "header">
+            <h1>Dashboard</h1>
+        </div>
+        <br>
+        <div class = "containerOne">
+            <button class = "buttons" onclick="addMeal()">Add Meal</button>
+            <button class = "buttons" onclick="generateSummary()">Generate Summary</button>
+            <button class = "buttons" onclick="addWorkout()">Add Workout</button>
+            <button class = "buttons" onclick="workoutHistory()">Workout History</button>
+        </div>
+        <p id = "meals"></p>
+        <p id = "summary"></p>
+        <br>
+        <script src="script.js" defer></script>
+    </body>
+</html>
