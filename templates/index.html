@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block head %}
+<title>Upload Files</title>
 {% endblock %}
 
 {% block body %}
@@ -11,7 +12,43 @@
       </p>
     </div>
   </div>
+
+<div class="container mt-5">
+    <h2>Upload Files</h2>
+    <form method="POST" action="{{ url_for('index') }}" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="file" class="form-label">Choose file:</label>
+            <input type="file" class="form-control" id="file" name="file" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
+</div>
+
+<div aria-live="polite" aria-atomic="true" class="position-relative">
+    <div class="toast-container position-absolute top-0 end-0 p-3">
+        {% for message in get_flashed_messages() %}
+        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">Message</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                {{ message }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+        var toastList = toastElList.map(function(toastEl) {
+            return new bootstrap.Toast(toastEl, { delay: 5000 });
+        });
+        toastList.forEach(toast => toast.show());
+    });
+</script>
 {% endblock %}

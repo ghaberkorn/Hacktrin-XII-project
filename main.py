@@ -3,7 +3,6 @@ from werkzeug.utils import secure_filename
 import os, sqlite3
 
 UPLOAD_FOLDER = 'uploadedfiles/'
-ALLOWED_EXTENSIONS = {'py', 'html', 'css', 'js', 'png', 'jpeg', 'jpg', 'gif', 'pdf', 'docx', 'pptx', 'xlsx'}
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -29,10 +28,6 @@ def init_db():
 
 init_db()
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
 @app.route("/", methods=['GET', 'POST'])
 def index():
     if 'logged_in' not in session or not session['logged_in']:
@@ -48,8 +43,8 @@ def index():
         if file.filename == '':
             flash('No selected file')
             return redirect(request.url)
-        
-        if file and allowed_file(file.filename):
+
+        if file:
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             flash('File successfully uploaded')
