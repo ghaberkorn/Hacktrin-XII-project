@@ -9,14 +9,15 @@
         {% block head %}{% endblock %}
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg navbar-dark">
-            <a class="navbar-brand" href="#">Open Source Code Repository</a>
-            <div class="collapse navbar-collapse">
-                <form class="form-inline my-2 my-lg-0 ml-auto search-bar">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search for code..." aria-label="Search">
-                </form>
+        <nav class="navbar bg-body-tertiary">
+            <div class="container-fluid">
+              <a class="navbar-brand">Navbar</a>
+              <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Search for code..." aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+              </form>
             </div>
-        </nav>
+          </nav>
         {% block body %}{% endblock %}
         
         <script src="{{ url_for('static', filename='js/https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js') }}"></script>
