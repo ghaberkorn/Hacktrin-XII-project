@@ -39,5 +39,13 @@ def download_file(name):
     # Serve the uploaded file
     return send_from_directory(app.config['UPLOAD_FOLDER'], name)
 
+@app.route('/login/')
+def login():
+    return render_template('login.html')
+
+@app.route('/register/')
+def login():
+    return render_template('register.html')
+
 if __name__ == '__main__':
     app.run(debug=True)
