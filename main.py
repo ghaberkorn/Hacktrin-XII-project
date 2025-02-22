@@ -9,21 +9,7 @@ from flask import Flask
 
 app = Flask(__name__)
 
-@app.route('/'
-           )
-def edit():
-    return ""
+@app.route('/')
 
-def approve():
-    return ""
-
-def start():
-    return ""
-
-def login():
-    return ""
-
-def signup():
-    return ""
 if __name__ == '__main__':
     app.run(debug=True)
