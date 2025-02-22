@@ -1,6 +1,7 @@
 from flask import Flask, render_template, flash, request, redirect, url_for, send_from_directory, session
 from werkzeug.utils import secure_filename
-import os, sqlite3
+import os
+import sqlite3
 
 UPLOAD_FOLDER = 'uploadedfiles/'
 ALLOWED_EXTENSIONS = {'html', 'css', 'py', 'java'}
@@ -30,22 +31,7 @@ def init_db():
 init_db()
 
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-def search_in_uploaded_files(query):
-    result_files = []
-    for filename in os.listdir(UPLOAD_FOLDER):
-        file_path = os.path.join(UPLOAD_FOLDER, filename)
-        
-        if os.path.isfile(file_path) and allowed_file(filename):
-            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
-                content = f.read()
-                
-                # Check if the query is in the file content
-                if query.lower() in content.lower():
-                    result_files.append(filename)
-    
-    return result_files
+    return '.' in filename
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
@@ -62,7 +48,7 @@ def index():
         if file.filename == '':
             flash('No selected file')
             return redirect(request.url)
-
+        
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
@@ -122,19 +108,23 @@ def register():
 
     return render_template('register.html')
 
-@app.route('/mission/')
-def mission():
-    return render_template('mission.html')
-
-@app.route("/search", methods=["GET", "POST"])
+@app.route('/search', methods=['GET'])
 def search():
-    query = request.args.get('query', '')
-    results = []
+    query = request.args.get('query')
+    if not query:
+        flash('Please enter a search term')
+        return redirect(url_for('index'))
 
-    if query:
-        results = search_in_uploaded_files(query)
-    
-    return render_template("search.html", results=results, query=query)
+    result_files = []
+    for filename in os.listdir(app.config['UPLOAD_FOLDER']):
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        if os.path.isfile(file_path):
+            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read()
+                if query.lower() in content.lower():
+                    result_files.append(filename)
+
+    return render_template('search.html', query=query, result_files=result_files)
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(24)

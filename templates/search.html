@@ -1,23 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Results</title>
-</head>
-<body>
-    <h1>Search Results for "{{ query }}"</h1>
+{% extends "base.html" %}
 
-    {% if results %}
-        <ul>
-        {% for result in results %}
-            <li>{{ result }}</li>
-        {% endfor %}
+{% block head %}
+<title>Search Results</title>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2>Search Results for "{{ query }}"</h2>
+    {% if result_files %}
+        <ul class="list-group">
+            {% for file in result_files %}
+                <li class="list-group-item">
+                    <a href="{{ url_for('download_file', name=file) }}">{{ file }}</a>
+                </li>
+            {% endfor %}
         </ul>
     {% else %}
-        <p>No results found.</p>
+        <p>No files found matching your search query.</p>
     {% endif %}
-    
-    <a href="/">Go back to Upload</a>
-</body>
-</html>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Go back to Upload</a>
+</div>
+{% endblock %}
