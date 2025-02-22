@@ -1,6 +1,6 @@
 from flask import Flask, render_template, flash, request, redirect, url_for, send_from_directory, session
 from werkzeug.utils import secure_filename
-import os
+import os, sqlite3
 
 UPLOAD_FOLDER = 'uploadedfiles/'
 ALLOWED_EXTENSIONS = {'py', 'html', 'css', 'js', 'png', 'jpeg', 'jpg', 'gif', 'pdf', 'docx', 'pptx', 'xlsx'}
@@ -9,11 +9,25 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SECRET_KEY'] = 'jhguidsfhvuidsfbgisdbvsdbvudfgfusdbvhusdbfgdsbvhdsfbf'
 
-loggedIn = False
-
 # Ensure the upload folder exists
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
+
+# Initialize SQLite database
+def init_db():
+    conn = sqlite3.connect('users.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL UNIQUE,
+            password TEXT NOT NULL
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+init_db()
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -21,7 +35,6 @@ def allowed_file(filename):
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    # Check if user is logged in
     if 'logged_in' not in session or not session['logged_in']:
         flash('You need to be logged in to upload files')
         return redirect(url_for('login'))
@@ -46,19 +59,21 @@ def index():
 
 @app.route('/uploads/<name>')
 def download_file(name):
-    # Serve the uploaded file
     return send_from_directory(app.config['UPLOAD_FOLDER'], name)
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
-    global loggedIn
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
 
-        # For simplicity, assume login is always successful
-        # Replace this with real authentication (database check, etc.)
-        if username == 'admin' and password == 'password':  # Example login check
+        conn = sqlite3.connect('users.db')
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM users WHERE username = ? AND password = ?', (username, password))
+        user = cursor.fetchone()
+        conn.close()
+
+        if user:
             session['logged_in'] = True
             flash('Login successful')
             return redirect(url_for('index'))
@@ -73,10 +88,26 @@ def logout():
     flash('You have been logged out')
     return redirect(url_for('login'))
 
-@app.route('/register/')
+@app.route('/register/', methods=['GET', 'POST'])
 def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        conn = sqlite3.connect('users.db')
+        cursor = conn.cursor()
+        try:
+            cursor.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, password))
+            conn.commit()
+            flash('Registration successful, please log in')
+            return redirect(url_for('login'))
+        except sqlite3.IntegrityError:
+            flash('Username already exists, please choose another')
+        finally:
+            conn.close()
+
     return render_template('register.html')
 
 if __name__ == '__main__':
-    app.secret_key = os.urandom(24)  # Ensure you have a secret key for sessions
+    app.secret_key = os.urandom(24)
     app.run(debug=True)
