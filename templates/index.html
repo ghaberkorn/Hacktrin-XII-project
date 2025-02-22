@@ -8,7 +8,10 @@
     <div class="homepage">
       <h1>Welcome to CodeShare</h1>
       <p>Upload and share your code with the universe :)</p>
-      </p>
+      <form method="post" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <input type="submit" value="Upload">
+      </form>
     </div>
   </div>
 {% endblock %}
