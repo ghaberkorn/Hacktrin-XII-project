@@ -21,19 +21,27 @@
 </div>
 
 {% for message in get_flashed_messages() %}
-<div class="alert alert-info alert-dismissible fade show" role="alert">
-    {{ message }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
+<div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" class="rounded me-2">
+      <strong class="me-auto">Login Message</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+        {{ message }}
+    </div>
+  </div>
 {% endfor %}
+
 {% endblock %}
+
 
 {% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var alertList = document.querySelectorAll('.alert');
-        alertList.forEach(function (alert) {
-            new bootstrap.Alert(alert);
+        alertList.forEach(function (alertmsg) {
+            new alert(alertmsg);ç
         });
     });
 </script>
