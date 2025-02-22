@@ -4,7 +4,6 @@ import os
 import sqlite3
 
 UPLOAD_FOLDER = 'uploadedfiles/'
-ALLOWED_EXTENSIONS = {'html', 'css', 'py', 'java'}
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -119,10 +118,13 @@ def search():
     for filename in os.listdir(app.config['UPLOAD_FOLDER']):
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         if os.path.isfile(file_path):
-            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
-                content = f.read()
-                if query.lower() in content.lower():
-                    result_files.append(filename)
+            if query.lower() in filename.lower():
+                result_files.append(filename)
+            else:
+                with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                    content = f.read()
+                    if query.lower() in content.lower():
+                        result_files.append(filename)
 
     return render_template('search.html', query=query, result_files=result_files)
 
