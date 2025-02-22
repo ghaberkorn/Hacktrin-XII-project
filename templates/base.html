@@ -11,7 +11,10 @@
     <body>
         <nav class="navbar bg-body-tertiary">
             <div class="container-fluid">
-              <a class="navbar-brand">Navbar</a>
+              <a class="navbar-brand" href="#">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
+                CodeShare
+              </a>
               <form class="d-flex" role="search">
                 <input class="form-control me-2" type="search" placeholder="Search for code..." aria-label="Search">
                 <button class="btn btn-outline-success" type="submit">Search</button>
