@@ -1,25 +1,27 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
+    background: linear-gradient(to right, #000428, #004e92);
+    color: white;
     margin: 0;
     padding: 0;
+}
+
+.navbar {
+    background-color: black;
+    padding: 10px 20px;
+}
+
+.navbar .search-bar input[type="text"] {
+    width: 300px;
+    padding: 5px;
+    border: none;
+    border-radius: 4px;
 }
 
 .container {
     max-width: 960px;
     margin: 0 auto;
     padding: 20px;
-}
-
-.search-bar {
-    margin: 20px 0;
-}
-
-.search-bar input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
 }
 
 .homepage {
@@ -34,5 +36,5 @@ body {
 
 .homepage p {
     font-size: 1.2em;
-    color: #6c757d;
+    color: #d1d1d1;
 }
