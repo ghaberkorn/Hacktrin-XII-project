@@ -29,15 +29,11 @@ def init_db():
 
 init_db()
 
-# Function to check allowed file extensions
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Function to search through uploaded files
 def search_in_uploaded_files(query):
     result_files = []
-    
-    # Loop through all files in the uploaded_files directory
     for filename in os.listdir(UPLOAD_FOLDER):
         file_path = os.path.join(UPLOAD_FOLDER, filename)
         
