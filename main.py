@@ -108,6 +108,10 @@ def register():
 
     return render_template('register.html')
 
+@app.route('/mission/')
+def mission():
+    return render_template('mission.html')
+
 if __name__ == '__main__':
     app.secret_key = os.urandom(24)
     app.run(debug=True)
